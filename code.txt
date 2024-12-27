@@ -1,0 +1,1036 @@
+pom.xml:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example</groupId>
+    <artifactId>student_management_system</artifactId>
+    <packaging>jar</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <name>student_management_system</name>
+    <url>http://maven.apache.org</url>
+
+    <properties>
+        <spring-boot.version>2.7.4</spring-boot.version> <!-- Specify the Spring Boot version -->
+        <java.version>11</java.version> <!-- Specify the Java version -->
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Spring Boot Web Starter -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>${spring-boot.version}</version>
+        </dependency>
+
+        <!-- Spring Data JPA Starter (Uncomment this to use Spring Data) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <version>${spring-boot.version}</version>
+        </dependency>
+
+        <!-- Spring Boot Thymeleaf Starter -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+            <version>${spring-boot.version}</version>
+        </dependency>
+
+        <!-- JPA / Hibernate -->
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>javax.persistence-api</artifactId>
+            <version>2.2</version>
+        </dependency>
+
+        <!-- Servlet API -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- JUnit 5 (Recommended version) -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.7.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.7.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- MySQL Connector -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.29</version> <!-- or the latest version -->
+        </dependency>
+
+        <!-- JAXB (for XML binding) -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>2.3.5</version>
+        </dependency>
+
+        <!-- Jakarta Persistence (JPA) -->
+    <dependency>
+        <groupId>jakarta.persistence</groupId>
+        <artifactId>jakarta.persistence-api</artifactId>
+        <version>3.1.0</version> <!-- Use the latest stable version -->
+    </dependency>
+
+    <!-- Jakarta Servlet API -->
+    <dependency>
+        <groupId>jakarta.servlet</groupId>
+        <artifactId>jakarta.servlet-api</artifactId>
+        <version>5.0.0</version> <!-- Use the latest stable version -->
+        <scope>provided</scope>
+    </dependency>
+
+    <!-- Jakarta CDI -->
+    <dependency>
+        <groupId>jakarta.enterprise</groupId>
+        <artifactId>jakarta.enterprise.cdi-api</artifactId>
+        <version>3.0.0</version> <!-- Use the latest stable version -->
+    </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Spring Boot Maven Plugin -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring-boot.version}</version>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+C:\Projects\student_management_system\src\main\java\com\example\student\controller\Controllers.java:
+package com.example.student.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import com.example.student.entity.Student;
+import com.example.student.service.StudentService;
+
+import java.util.List;
+
+@Controller
+public class Controllers {
+
+    @Autowired
+    private StudentService studentService;
+
+    @GetMapping("/")
+    public String home() {
+        return "home";  // Returns home.html
+    }
+
+    @GetMapping("/add")
+    public String addStudentPage() {
+        return "addStudent";  // Returns addStudent.html
+    }
+
+    @PostMapping("/submitStudent")
+    public String addStudent(@ModelAttribute Student student) {
+        studentService.addStudent(student);
+        return "redirect:/view";  // Redirect to view all students after adding
+    }
+
+    @GetMapping("/view")
+    public String viewAllStudents(Model model) {
+        List<Student> students = studentService.getAllStudents();
+        model.addAttribute("students", students);
+        return "viewAllStudents";  // Returns viewAllStudents.html
+    }
+
+    
+
+    @GetMapping("/delete/{id}")
+    public String deleteStudent(@PathVariable Long id) {
+        studentService.deleteStudent(id);
+        return "redirect:/view";
+    }
+
+    @GetMapping("/update/{id}")
+    public String updateStudentPage(@PathVariable Long id, Model model) {
+        Student student = studentService.getAllStudents().stream()
+                              .filter(s -> s.getId().equals(id))
+                              .findFirst()
+                              .orElseThrow(() -> new RuntimeException("Student not found"));
+        model.addAttribute("student", student);
+        return "updateStudent";  // Returns updateStudent.html
+    }
+
+    @PostMapping("/updateStudent/{id}")
+    public String updateStudent(@PathVariable Long id, @ModelAttribute Student updatedStudent) {
+        studentService.updateStudent(id, updatedStudent);
+        return "redirect:/view";
+    }
+}
+
+C:\Projects\student_management_system\src\main\java\com\example\student\entity\Student.java:
+package com.example.student.entity;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+
+
+@Entity
+public class Student {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+    private String email;
+    private String phone;
+    private String dob;
+    private String department;
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getDob() {
+        return dob;
+    }
+
+    public void setDob(String dob) {
+        this.dob = dob;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+}
+
+C:\Projects\student_management_system\src\main\java\com\example\student\model\StudentRegistration.java:
+package com.example.student.model;
+import java.sql.Date;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+@Entity
+public class StudentRegistration {
+    @Id
+    private int sno; 
+    private String name; 
+    private Date dob; 
+    private Date doj; 
+    private String email; 
+    private String department; 
+    private String phno;
+    public int getSno() {
+        return sno;
+    }
+    public void setSno(int sno) {
+        this.sno = sno;
+    }
+
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public Date getDob() {
+        return dob;
+    }
+    public void setDob(Date dob) {
+        this.dob = dob;
+    }
+    public Date getDoj() {
+        return doj;
+    }
+    public void setDoj(Date doj) {
+        this.doj = doj;
+    }
+    public String getEmail() {
+        return email;
+    }
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    public String getDepartment() {
+        return department;
+    }
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+    public String getPhno() {
+        return phno;
+    }
+
+    public void setPhno(String phno) {
+        this.phno = phno;
+    }
+    @Override
+    public String toString() {
+        return "StudentRegistration [sno=" + sno +
+                ", name=" + name +
+                ", dob=" + dob +
+                ", doj=" + doj +
+                ", email=" + email +
+                ", department=" + department +
+                ", phno=" + phno + "]";
+    }
+}
+
+C:\Projects\student_management_system\src\main\java\com\example\student\repository\StudentRepository.java:
+package com.example.student.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.example.student.entity.Student;
+
+public interface StudentRepository extends JpaRepository<Student, Long> {
+}
+
+C:\Projects\student_management_system\src\main\java\com\example\student\service\StudentService.java:
+package com.example.student.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.example.student.entity.Student;
+import com.example.student.repository.StudentRepository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class StudentService {
+
+    @Autowired
+    private StudentRepository studentRepository;
+
+    public Student addStudent(Student student) {
+        return studentRepository.save(student);
+    }
+    public List<Student> getAllStudents() {
+        return studentRepository.findAll();
+    }
+
+    public Student updateStudent(Long id, Student updatedStudent) {
+        Optional<Student> studentOptional = studentRepository.findById(id);
+        if (studentOptional.isPresent()) {
+            Student student = studentOptional.get();
+            student.setName(updatedStudent.getName());
+            student.setEmail(updatedStudent.getEmail());
+            student.setPhone(updatedStudent.getPhone());
+            student.setDob(updatedStudent.getDob());
+            student.setDepartment(updatedStudent.getDepartment());
+            return studentRepository.save(student);
+        } else {
+            throw new RuntimeException("Student not found with id: " + id);
+        }
+    }
+
+    
+  
+
+    // Delete Student
+    public void deleteStudent(Long id) {
+        studentRepository.deleteById(id);
+    }
+}
+
+C:\Projects\student_management_system\src\main\java\com\example\student\servlet\StudentServlet.java:
+package com.example.student.servlet;
+
+import com.example.student.util.DatabaseConnection;
+import com.example.student.model.StudentRegistration;
+import java.io.*;
+import java.sql.*;
+import javax.servlet.*;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+
+@WebServlet("/student")
+public class StudentServlet extends HttpServlet {
+    
+    private static final long serialVersionUID = 1L;
+
+    // Method to handle student registration
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int sno = Integer.parseInt(request.getParameter("sno"));
+        String name = request.getParameter("name");
+        Date dob = Date.valueOf(request.getParameter("dob"));
+        Date doj = Date.valueOf(request.getParameter("doj"));
+        String email = request.getParameter("email");
+        String department = request.getParameter("department");
+        String phno = request.getParameter("phno");
+        
+        // Create a StudentRegistration object and set its values
+        StudentRegistration student = new StudentRegistration();
+        student.setSno(sno);
+        student.setName(name);
+        student.setDob(dob);
+        student.setDoj(doj);
+        student.setEmail(email);
+        student.setDepartment(department);
+        student.setPhno(phno);
+
+        // Insert student into the database
+        try (Connection connection = DatabaseConnection.getConnection()) {
+            String query = "INSERT INTO student_registration (sno, name, dob, doj, email, department, phno) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setInt(1, student.getSno());
+                statement.setString(2, student.getName());
+                statement.setDate(3, student.getDob());
+                statement.setDate(4, student.getDoj());
+                statement.setString(5, student.getEmail());
+                statement.setString(6, student.getDepartment());
+                statement.setString(7, student.getPhno());
+                
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        // Redirect to the success page
+        response.sendRedirect("success.jsp");
+    }
+
+    // Method to handle student deletion
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int sno = Integer.parseInt(request.getParameter("sno"));
+        
+        // Delete student from the database
+        try (Connection connection = DatabaseConnection.getConnection()) {
+            String query = "DELETE FROM student_registration WHERE sno = ?";
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setInt(1, sno);
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        response.sendRedirect("deleteSuccess.jsp");
+    }
+
+    // Method to handle student update
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int sno = Integer.parseInt(request.getParameter("sno"));
+        String name = request.getParameter("name");
+        Date dob = Date.valueOf(request.getParameter("dob"));
+        Date doj = Date.valueOf(request.getParameter("doj"));
+        String email = request.getParameter("email");
+        String department = request.getParameter("department");
+        String phno = request.getParameter("phno");
+
+        // Create a StudentRegistration object and set its values
+        StudentRegistration student = new StudentRegistration();
+        student.setSno(sno);
+        student.setName(name);
+        student.setDob(dob);
+        student.setDoj(doj);
+        student.setEmail(email);
+        student.setDepartment(department);
+        student.setPhno(phno);
+
+        // Update student in the database
+        try (Connection connection = DatabaseConnection.getConnection()) {
+            String query = "UPDATE student_registration SET name = ?, dob = ?, doj = ?, email = ?, department = ?, phno = ? WHERE sno = ?";
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setString(1, student.getName());
+                statement.setDate(2, student.getDob());
+                statement.setDate(3, student.getDoj());
+                statement.setString(4, student.getEmail());
+                statement.setString(5, student.getDepartment());
+                statement.setString(6, student.getPhno());
+                statement.setInt(7, student.getSno());
+                
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        response.sendRedirect("updateSuccess.jsp");
+    }
+}
+
+C:\Projects\student_management_system\src\main\java\com\example\student\util\DatabaseConnection.java:
+package com.example.student.util;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+public class DatabaseConnection {
+private static final String DB_URL = "jdbc:mysql://localhost:3306/studentm";
+    private static final String DB_USER = "root";
+    private static final String DB_PASSWORD = "bajaj201spx";
+    public static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+    }
+}
+
+C:\Projects\student_management_system\src\main\java\com\example\student\Main.java:
+package com.example.student;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class Main {
+    public static void main(String[] args) {
+        SpringApplication.run(Main.class, args);
+    }
+}
+
+C:\Projects\student_management_system\src\main\resources\templates\addStudent.html:
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Student</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <div class="navbar">
+      <div class="app-name">Student Management System</div>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/add" class="active">Register Student</a></li>
+        <li><a href="/delete">Delete Student</a></li>
+        <li><a href="/update">Update Student</a></li>
+        <li><a href="/viewAll">Display All Students</a></li>
+      </ul>
+    </div>
+    <div class="form-container">
+      <h2 style="text-align: center">Enter Student Details</h2>
+      <form action="/submitStudent" method="POST">
+        <div class="form-group">
+          <label for="studentName">Student Name:</label>
+          <input type="text" id="studentName" name="studentName" required />
+        </div>
+        <div class="form-group">
+          <label for="studentID">Student ID:</label>
+          <input type="text" id="studentID" name="studentID" required />
+        </div>
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email" required />
+        </div>
+        <div class="form-group">
+          <label for="phone">Phone Number:</label>
+          <input type="text" id="phone" name="phone" required />
+        </div>
+        <div class="form-group">
+          <label for="dob">Date of Birth:</label>
+          <input type="date" id="dob" name="dob" required />
+        </div>
+        <div class="form-group">
+          <label for="department">Department:</label>
+          <input type="text" id="department" name="department" required />
+        </div>
+        <div class="form-group">
+          <button type="submit">Add Student</button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>
+
+C:\Projects\student_management_system\src\main\resources\templates\deleteStudent.html:
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Delete Student</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <div class="navbar">
+      <div class="app-name">Student Management System</div>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/add">Register Student</a></li>
+        <li><a href="/delete" class="active">Delete Student</a></li>
+        <li><a href="/update">Update Student</a></li>
+        <li><a href="/view">Display All Students</a></li>
+      </ul>
+    </div>
+    <div class="form-container">
+      <h2 style="text-align: center">Delete Student</h2>
+      <form action="/deleteStudent" method="POST">
+        <div class="form-group">
+          <label for="studentID">Enter Student ID:</label>
+          <input type="text" id="studentID" name="studentID" required />
+        </div>
+        <div class="form-group">
+          <button type="submit">Delete Student</button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>
+
+C:\Projects\student_management_system\src\main\resources\templates\home.html:
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Management System</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <style>
+      body {
+        padding: 0;
+        color: #333;
+      }
+      .content {
+        padding: 40px 60px;
+        max-width: 1100px;
+        margin: 30px auto;
+        background-color: #fff;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+      }
+
+      h1 {
+        font-size: 36px;
+        color: #2c3e50;
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      h2 {
+        font-size: 28px;
+        color: #34495e;
+        margin-bottom: 20px;
+      }
+
+      p {
+        font-size: 18px;
+        line-height: 1.6;
+        margin-bottom: 20px;
+        color: #555;
+      }
+
+      .content ul {
+        list-style: none;
+        padding-left: 0;
+      }
+
+      .content ul li {
+        font-size: 18px;
+        margin-bottom: 15px;
+      }
+
+      .content ul li strong {
+        color: #3498db;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="navbar">
+      <div class="app-name">Student Management System</div>
+      <ul>
+        <li><a href="/" class="active">Home</a></li>
+        <li><a href="/add">Register Student</a></li>
+        <li><a href="/delete">Delete Student</a></li>
+        <li><a href="/update">Update Student</a></li>
+        <li><a href="/view">Display All Students</a></li>
+      </ul>
+    </div>
+
+    <div class="content">
+      <h1>Welcome to the Student Management System</h1>
+      <p>
+        This web application is designed to make the management of student data
+        easy and efficient. Whether you are a teacher, an admin, or a student,
+        you can access and manage student records with just a few clicks.
+      </p>
+
+      <h2>Features of the Application:</h2>
+      <ul>
+        <li>
+          <strong>Register New Students:</strong> Easily add new student
+          information to the system.
+        </li>
+        <li>
+          <strong>Update Student Records:</strong> Edit and update details of
+          existing students.
+        </li>
+        <li>
+          <strong>Delete Student Records:</strong> Remove students who no longer
+          require a record.
+        </li>
+        <li>
+          <strong>View All Students:</strong> View a complete list of all
+          students stored in the system.
+        </li>
+      </ul>
+
+      <p>
+        Our goal is to simplify student data management, improve accessibility,
+        and help administrators keep track of students in an efficient manner.
+      </p>
+    </div>
+  </body>
+</html>
+
+C:\Projects\student_management_system\src\main\resources\templates\updateStudent.html:
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Update Student</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <style>
+      .form-container {
+        width: 90%;
+        max-width: 600px;
+        margin: 40px auto;
+        padding: 20px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .form-container h2 {
+        text-align: center;
+        color: #007bff;
+        margin-bottom: 20px;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+
+      input[type="text"],
+      input[type="email"],
+      input[type="date"],
+      input[type="number"],
+      button {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 1em;
+      }
+
+      button {
+        background: #007bff;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background: #0056b3;
+      }
+
+      .navbar {
+        background-color: #007bff;
+        padding: 10px;
+        color: white;
+      }
+
+      .navbar .app-name {
+        font-size: 1.5em;
+        font-weight: bold;
+        display: inline-block;
+      }
+
+      .navbar ul {
+        display: inline-block;
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      .navbar ul li {
+        display: inline-block;
+        margin-left: 20px;
+      }
+
+      .navbar ul li a {
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+      }
+
+      .navbar ul li a.active {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="navbar">
+      <div class="app-name">Student Management System</div>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/add">Register Student</a></li>
+        <li><a href="/delete">Delete Student</a></li>
+        <li><a href="/update" class="active">Update Student</a></li>
+        <li><a href="/viewAll">Display All Students</a></li>
+      </ul>
+    </div>
+    <div class="form-container">
+      <h2>Update Student</h2>
+      <form action="/updateStudent" method="POST">
+        <!-- Student ID -->
+        <div class="form-group">
+          <label for="studentID">Student ID:</label>
+          <input
+            type="text"
+            id="studentID"
+            name="studentID"
+            placeholder="Enter the student ID"
+            required
+          />
+        </div>
+
+        <!-- Student Name -->
+        <div class="form-group">
+          <label for="studentName">Student Name:</label>
+          <input
+            type="text"
+            id="studentName"
+            name="studentName"
+            placeholder="Enter the student name"
+            required
+          />
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Enter a valid email address"
+            required
+          />
+        </div>
+
+        <!-- Phone Number -->
+        <div class="form-group">
+          <label for="phone">Phone Number:</label>
+          <input
+            type="text"
+            id="phone"
+            name="phone"
+            placeholder="Enter the phone number"
+            required
+          />
+        </div>
+
+        <!-- Date of Birth -->
+        <div class="form-group">
+          <label for="dob">Date of Birth:</label>
+          <input type="date" id="dob" name="dob" required />
+        </div>
+
+        <!-- Department -->
+        <div class="form-group">
+          <label for="department">Department:</label>
+          <input
+            type="text"
+            id="department"
+            name="department"
+            placeholder="Enter the department"
+            required
+          />
+        </div>
+
+        <!-- Submit Button -->
+        <div class="form-group">
+          <button type="submit">Update Student</button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>
+
+C:\Projects\student_management_system\src\main\resources\templates\viewAllStudent.html:
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>View All Students</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <style>
+      .table-container {
+        width: 90%;
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 20px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .table-container h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #007bff;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+      }
+
+      table thead {
+        background: #007bff;
+        color: white;
+      }
+
+      table th,
+      table td {
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+      }
+
+      table tbody tr:nth-child(odd) {
+        background: #f9f9f9;
+      }
+
+      table tbody tr:hover {
+        background: #f1f1f1;
+      }
+
+      table th {
+        text-transform: uppercase;
+        font-weight: bold;
+      }
+
+      table td {
+        font-size: 0.9em;
+      }
+
+      @media screen and (max-width: 768px) {
+        table {
+          font-size: 0.8em;
+        }
+
+        table th,
+        table td {
+          padding: 8px 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="navbar">
+      <div class="app-name">Student Management System</div>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/add">Register Student</a></li>
+        <li><a href="/delete">Delete Student</a></li>
+        <li><a href="/update">Update Student</a></li>
+        <li><a href="/viewAll" class="active">Display All Students</a></li>
+      </ul>
+    </div>
+    <div class="table-container">
+      <h2>List of All Students</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Student ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Date of Birth</th>
+            <th>Department</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="student : ${students}">
+            <td th:text="${student.id}">12345</td>
+            <td th:text="${student.name}">John Doe</td>
+            <td th:text="${student.email}">john.doe@example.com</td>
+            <td th:text="${student.phone}">+1-234-567-8901</td>
+            <td th:text="${student.dob}">2002-05-10</td>
+            <td th:text="${student.department}">Computer Science</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>
+
+C:\Projects\student_management_system\src\main\resources\application.properties:
+spring.datasource.url=jdbc:mysql://localhost:3306/studentm
+spring.datasource.username=root
+spring.datasource.password=bajaj201spx
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.jpa.database-platform=org.hibernate.dialect.MySQL5Dialect
+server.port=8081
+
