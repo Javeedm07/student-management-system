@@ -1,0 +1,92 @@
+Folder PATH listing for volume Windows
+Volume serial number is 90F5-4C94
+C:.
+¦   code.txt
+¦   directory_tree.txt
+¦   pom.xml
+¦   structure.txt
+¦   
++---.vscode
+¦       settings.json
+¦       
++---src
+¦   +---main
+¦       +---java
+¦       ¦   +---com
+¦       ¦       +---example
+¦       ¦           +---student
+¦       ¦               ¦   Main.java
+¦       ¦               ¦   
+¦       ¦               +---controller
+¦       ¦               ¦       StudentController.java
+¦       ¦               ¦       
+¦       ¦               +---entity
+¦       ¦               ¦       Student.java
+¦       ¦               ¦       
+¦       ¦               +---repository
+¦       ¦               ¦       StudentRepository.java
+¦       ¦               ¦       
+¦       ¦               +---service
+¦       ¦                       StudentService.java
+¦       ¦                       
+¦       +---resources
+¦           ¦   application.properties
+¦           ¦   
+¦           +---static
+¦           ¦   +---css
+¦           ¦           styles.css
+¦           ¦           
+¦           +---templates
+¦                   addStudent.html
+¦                   home.html
+¦                   searchStudent.html
+¦                   updateStudent.html
+¦                   viewAllStudent.html
+¦                   
++---target
+    ¦   student_management_system-1.0-SNAPSHOT.jar
+    ¦   student_management_system-1.0-SNAPSHOT.jar.original
+    ¦   
+    +---classes
+    ¦   ¦   application.properties
+    ¦   ¦   
+    ¦   +---com
+    ¦   ¦   +---example
+    ¦   ¦       +---student
+    ¦   ¦           ¦   Main.class
+    ¦   ¦           ¦   
+    ¦   ¦           +---controller
+    ¦   ¦           ¦       StudentController.class
+    ¦   ¦           ¦       
+    ¦   ¦           +---entity
+    ¦   ¦           ¦       Student.class
+    ¦   ¦           ¦       
+    ¦   ¦           +---repository
+    ¦   ¦           ¦       StudentRepository.class
+    ¦   ¦           ¦       
+    ¦   ¦           +---service
+    ¦   ¦                   StudentService.class
+    ¦   ¦                   
+    ¦   +---static
+    ¦   ¦   +---css
+    ¦   ¦           styles.css
+    ¦   ¦           
+    ¦   +---templates
+    ¦           addStudent.html
+    ¦           home.html
+    ¦           searchStudent.html
+    ¦           updateStudent.html
+    ¦           viewAllStudent.html
+    ¦           
+    +---generated-sources
+    ¦   +---annotations
+    +---maven-archiver
+    ¦       pom.properties
+    ¦       
+    +---maven-status
+        +---maven-compiler-plugin
+            +---compile
+                +---default-compile
+                        createdFiles.lst
+                        inputFiles.lst
+                        

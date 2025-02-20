@@ -11,7 +11,8 @@ import jakarta.validation.Valid;
 import java.util.List;
 
 @Controller
-public class StudentController {
+public class StudentController 
+{
 
     @Autowired
     private StudentService studentService;
@@ -65,6 +66,9 @@ public class StudentController {
         studentService.updateStudent(id, student);
         return "redirect:/viewAll";
     }
+
+    
+
 
     @GetMapping("/search")
     public String showSearchPage(Model model) {

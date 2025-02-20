@@ -1,0 +1,35 @@
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap");
+
+* {
+  font-family: "Lato", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+body {
+  background-color: #f8f9fa;
+}
+
+.navbar-brand {
+  color: #1e88e5 !important;
+  font-weight: 600;
+}
+.nav-link {
+  color: #495057 !important;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+.nav-link:hover {
+  color: #1e88e5 !important;
+}
+.nav-link.active {
+  color: #1e88e5 !important;
+  background: rgba(30, 136, 229, 0.1);
+  border-radius: 0.5rem;
+}
+
+.sticky-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1020;
+}
